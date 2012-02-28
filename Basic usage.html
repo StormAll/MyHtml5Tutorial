@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Canvas tutorial</title>
+	<script type="text/javascript">
+		function draw() {
+			var c=document.getElementById("myCanvas");
+			var cxt=c.getContext("2d");
+			
+			cxt.fillStyle="rgb(200,0,0)";
+			cxt.fillRect(10,10,55,50);
+			
+			cxt.fillStyle="rgba(0,0,200,0.5)";
+			cxt.fillRect(30,30,55,50);
+		}
+	</script>
+	<style type="text/css">
+		canvas {border: 1px solid black;}
+	</style>
+</head>
+<body onload="draw();">
+	<canvas id="myCanvas" width="150" height="150">
+	Your browser does not support the canvas element.
+	</canvas>
+</body>
+</html>
