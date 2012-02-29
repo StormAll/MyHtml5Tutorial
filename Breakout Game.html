@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Breakout Game</title>
+	<script type="text/javascript">
+	    var x = 150;
+		var y = 150;
+		var dx = 2;
+		var dy = 4;
+		var WIDTH;
+		var HEIGHT;
+		var ballr = 10;
+		
+		var paddlex;
+		var paddleh;
+		var paddlew;
+		
+		var rightDown = false;
+		var leftDown = false;
+		
+		var canvasMinX;
+		var canvasMaxX;
+		
+		var bricks;
+		var NROWS;
+		var NCOLS;
+		var BRICKWIDTH;
+		var BRICKHEIGHT;
+		var PADDING;
+		var rowcolors = ["#FF1C0A", "#FFFD0A", "#00A308", "#0008DB", "#EB0093"];
+		var paddlecolor = "#000000";
+		var ballcolor = "#000000";
+		var backcolor = "#FFFFFF";
+		
+		var ctx;
+		var intervalId;
+		
+		document.onkeydown = onKeyDown;
+		document.onkeyup = onKeyUp;
+		document.onmousemove = onMouseMove;
+		
+		function onMouseMove(evt) {
+			if (evt.pageX > canvasMinX && evt.pageX < canvasMaxX) {
+				paddlex = evt.pageX - canvasMinX - paddlew/2;
+			}
+		}
+		
+		function onKeyDown(evt) {
+			if (evt.keyCode == 39) {
+				rightDown = true;
+			} else if (evt.keyCode == 37) {
+				leftDown = true;
+			}
+		}
+		
+		function onKeyUp(evt) {
+			if (evt.keyCode == 39) {
+				rightDown = false;
+			} else if (evt.keyCode == 37) {
+				leftDown = false;
+			}
+		}
+		
+		function init() {
+			var myCanvas = document.getElementById("myCanvas");
+			ctx = myCanvas.getContext("2d");
+			WIDTH = myCanvas.width;
+			HEIGHT = myCanvas.height;
+			
+			paddlex = WIDTH / 2;
+			paddleh = 10;
+			paddlew = 75;
+			
+			canvasMinX = myCanvas.offsetLeft;
+			canvasMaxX = canvasMinX + WIDTH;
+			
+			NROWS = 5;
+			NCOLS = 5;
+			BRICKWIDTH = (WIDTH/NCOLS) - 1;
+			BRICKHEIGHT = 15;
+			PADDING = 1;
+			bricks = new Array(NROWS);
+			for (i=0; i < NROWS; i++) {
+				bricks[i] = new Array(NCOLS);
+				for (j=0; j < NCOLS; j++) {
+					bricks[i][j] = 1;
+				}
+			}
+			
+			intervalId = setInterval(draw, 10);
+		}
+		
+		function circle(x,y,r) {
+			ctx.beginPath();
+			ctx.arc(x,y,r,0,Math.PI*2, true);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		function rect(x,y,w,h) {
+			ctx.beginPath();
+			ctx.rect(x,y,w, h);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		function clear() {
+			ctx.clearRect(0,0,WIDTH,HEIGHT);
+			rect(0,0,WIDTH,HEIGHT);
+		}
+		
+		function draw() {
+			
+			ctx.fillStyle = backcolor;
+			clear();
+			
+			ctx.fillStyle = ballcolor;
+			circle(x,y,ballr);
+			
+			if (rightDown) {
+				paddlex += 5;
+			} else if (leftDown) {
+				paddlex -= 5;
+			}
+			ctx.fillStyle = paddlecolor;
+			rect(paddlex, HEIGHT-paddleh, paddlew, paddleh);
+			
+			// draw bricks
+			for (i=0; i < NROWS; i++) {
+				for (j=0; j < NCOLS; j++) {
+					if (bricks[i][j] == 1) {
+						ctx.fillStyle = rowcolors[i];
+						rect(j*(BRICKWIDTH + PADDING) + PADDING,
+						     i*(BRICKHEIGHT + PADDING) + PADDING,
+							 BRICKWIDTH, BRICKHEIGHT);
+					}
+				}
+			}
+			
+			// have we hit a brick?
+			var rowheight = BRICKHEIGHT + PADDING;
+			var colwidth = BRICKWIDTH + PADDING;
+			var row = Math.floor(y/rowheight);
+			var col = Math.floor(x/colwidth);
+			if (y < NROWS * rowheight && row >=0 && col >= 0 && bricks[row][col] == 1) {
+				dy = -dy;
+				bricks[row][col] = 0;
+			}
+			
+			if (x + dx + ballr > WIDTH || x + dx - ballr < 0) {
+				dx = -dx;
+			}
+			if (y + dy - ballr < 0) {
+				dy = -dy;
+			} else if (y + dy + ballr> HEIGHT - paddleh) {
+				if (x > paddlex && x < paddlex + paddlew) {
+					dy = -dy;
+				} else if (y + dy + ballr > HEIGHT) {
+					// game over, so stop the animation.
+					clearInterval(intervalId);
+				}
+			}
+			
+			x += dx;
+			y += dy;
+		}
+	</script>
+	<style type="text/css">
+		canvas {border: 1px solid black;}
+	</style>
+</head>
+<body onload="init();">
+	<canvas id="myCanvas" width="300" height="300">
+	Your browser does not support the canvas element.
+	</canvas>
+</body>
+</html>

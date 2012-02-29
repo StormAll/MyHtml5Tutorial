@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Canvas tutorial</title>
+	<script type="text/javascript">
+		function draw() {
+			var c=document.getElementById("myCanvas");
+			var cxt=c.getContext("2d");
+			
+			var startX = 0;
+			var startY = 0;
+			
+			// draw rectangle
+			cxt.fillRect(25+startX,25+startY,100,100);
+			cxt.clearRect(45+startX,45+startY,60,60);
+			cxt.strokeRect(50+startX,50+startY,50,50);
+			
+			// draw smiley face
+			startX = 150;
+			startY = 0;
+			cxt.beginPath();
+			cxt.arc(75+startX,75+startY,50,0,Math.PI*2,true);
+			cxt.moveTo(110+startX,75+startY);
+			cxt.arc(75+startX,75+startY,35,0,Math.PI,false);
+			cxt.moveTo(65+startX,65+startY);
+			cxt.arc(60+startX,65+startY,5,0,Math.PI*2,true);
+			cxt.moveTo(95+startX,65+startY);
+			cxt.arc(90+startX,65+startY,5,0,Math.PI*2,true);
+			cxt.stroke();
+			
+			// filled triangle
+			startX = 300;
+			startY = 0;
+			cxt.beginPath();
+			cxt.moveTo(25+startX,25+startY);
+			cxt.lineTo(105+startX,25+startY);
+			cxt.lineTo(25+startX,105+startY);
+			cxt.fill();
+			
+			// storked triangle
+			cxt.beginPath();
+			cxt.moveTo(125+startX,125+startY);
+			cxt.lineTo(125+startX,45+startY);
+			cxt.lineTo(45+startX,125+startY);
+			cxt.closePath();
+			cxt.stroke();
+			
+			// draw circle.
+			startX = 0;
+			startY = 150;
+			for(var i=0;i<4;i++){  
+				 for(var j=0;j<3;j++){  
+					cxt.beginPath();  
+					var x              = 25+startX+j*50;        // x coordinate  
+					var y              = 25+startY+i*50;        // y coordinate  
+					var radius         = 20;                    // Arc radius  
+					var startAngle     = 0;                     // Starting point on circle  
+					var endAngle       = Math.PI+(Math.PI*j)/2; // End point on circle  
+					var anticlockwise  = i%2==0 ? false : true; // clockwise or anticlockwise  
+				  
+					cxt.arc(x,y,radius,startAngle,endAngle, anticlockwise);  
+				  
+					if (i>1){  
+					  cxt.fill();  
+					} else {  
+					  cxt.stroke();  
+					}  
+				 }  
+			}
+			
+			// quadraticCurveTo.
+			startX = 450;
+			startY = 0;
+			cxt.beginPath();  
+			cxt.moveTo(75,25);  
+			cxt.quadraticCurveTo(25,25,25,62.5);  
+			cxt.quadraticCurveTo(25,100,50,100);  
+			cxt.quadraticCurveTo(50,120,30,125);  
+			cxt.quadraticCurveTo(60,120,65,100);  
+			cxt.quadraticCurveTo(125,100,125,62.5);  
+			cxt.quadraticCurveTo(125,25,75,25);  
+			cxt.stroke(); 
+		}
+	</script>
+	<style type="text/css">
+		canvas {border: 2px solid black;}
+	</style>
+</head>
+<body onload="draw();">
+	<canvas id="myCanvas" width="450" height="400">
+	Your browser does not support the canvas element.
+	</canvas>
+</body>
+</html>
